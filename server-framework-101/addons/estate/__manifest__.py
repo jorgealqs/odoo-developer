@@ -6,7 +6,7 @@
     'category': 'Odoo/Tutorials',
     "depends": ["base", "web"],
     "data": [
-        # "security/ir.model.access.csv",
+        "security/ir.model.access.csv",
         # "views/estate_property_view.xml",
     ],
     "installable": True,
