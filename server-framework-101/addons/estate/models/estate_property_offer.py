@@ -34,6 +34,14 @@ class EstatePropertyOffer(models.Model):
         store=True
     )
 
+    _sql_constraints = [
+        (
+            'check_price',
+            'CHECK(price > 0)',
+            'The price must be greater than zero.'
+        )
+    ]
+
     @api.depends('validity', 'create_date')
     def _compute_deadline(self):
         for record in self:
