@@ -26,6 +26,10 @@
             <field name="model">estate.property</field>
             <field name="arch" type="xml">
                 <form string="Property">
+                    <header>
+                        <button name="action_cancel_property" type="object" string="Cancel" class="btn-danger"/>
+                        <button name="action_sold_property" type="object" string="Sold" class="btn-success"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <div class="oe_edit_only">
@@ -35,10 +39,11 @@
                                 <field name="name" class="mb16"/>
                             </h1>
                             <field name="active" invisible="1"/>
-                            <field name="tag_ids" widget="many2many_tags"/>
+                            <field name="tag_ids" widget="many2many_tags" string="Tags"/>
                         </div>
                         <group>
                             <group>
+                                <field name="state" string="Status" invisible="1"/>
                                 <field name="property_type_id"/>
                                 <field name="postcode"/>
                                 <field name="date_availability"/>
@@ -86,7 +91,7 @@
             <field name="arch" type="xml">
                 <tree string="Estate Properties">
                     <field name="name"/>
-                    <field name="state"/>
+                    <field name="state" optional="True"/>
                     <field name="expected_price"/>
                     <field name="selling_price"/>
                     <field name="bedrooms"/>

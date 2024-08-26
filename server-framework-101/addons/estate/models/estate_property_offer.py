@@ -1,5 +1,6 @@
 from odoo import models, fields, api  # noqa: F401
 from datetime import timedelta
+from odoo.exceptions import UserError
 
 
 class EstatePropertyOffer(models.Model):
@@ -58,3 +59,21 @@ class EstatePropertyOffer(models.Model):
                     # validez basada en hoy
                     delta = record.date_deadline - fields.Date.today()
                     record.validity = delta.days
+
+    def action_confirm_offer(self):
+        for record in self:
+            # Verificar si la oferta ya está aceptada
+            if record.property_id.offer_ids.filtered(
+                lambda o: (
+                    o.status == 'accepted' and o.id != record.id
+                    )
+            ):
+                raise UserError("This property already has an accepted offer.")
+            # Si la oferta no está aceptada, procede a aceptarla
+            record.status = 'accepted'
+            record.property_id.selling_price = record.price
+            record.property_id.buyer = record.partner_id
+
+    def action_refused_offer(self):
+        for record in self:
+            record.status = 'refused'
