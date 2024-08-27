@@ -11,9 +11,14 @@
                     <field name="postcode"/>
                     <field name="expected_price"/>
                     <field name="bedrooms"/>
-                    <field name="living_area"/>
                     <field name="facades"/>
-                    <filter name="state" domain="['|', ('state', '=', 'new'), ('state', '=', 'offer_received')]" string="Available"/>
+                    <!-- search_default  on the context  -->
+                    <filter name="filter_available"
+                    domain="['|', ('state', '=', 'new'), ('state', '=', 'offer_received')]"
+                    string="Available"/>
+                    <!-- filter_domain  -->
+                    <field name="living_area" string="Living area(sqm)"
+                        filter_domain="[('living_area', '>=', self)]"/>
                     <group expand="1" string="Group By">
                         <filter string="Postcode" name="postcode" context="{'group_by':'postcode'}"/>
                     </group>
@@ -27,8 +32,9 @@
             <field name="arch" type="xml">
                 <form string="Property">
                     <header>
-                        <button name="action_cancel_property" type="object" string="Cancel" class="btn-danger"/>
-                        <button name="action_sold_property" type="object" string="Sold" class="btn-success"/>
+                        <button name="action_cancel_property" type="object" string="Cancel" class="btn-danger" invisible="state == 'sold' or state == 'canceled' "/>
+                        <button name="action_sold_property" type="object" string="Sold" class="btn-success" invisible="state == 'sold' or state == 'canceled' "/>
+                        <field name="state" widget="statusbar" statusbar_visible="new,offer_received,offer_accepted,sold"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -39,12 +45,14 @@
                                 <field name="name" class="mb16"/>
                             </h1>
                             <field name="active" invisible="1"/>
-                            <field name="tag_ids" widget="many2many_tags" string="Tags"/>
+                            <group>
+                                <field name="tag_ids" widget="many2many_tags" string="Tags" options="{'color_field': 'color'}"/>
+                            </group>
                         </div>
                         <group>
                             <group>
-                                <field name="state" string="Status" invisible="1"/>
-                                <field name="property_type_id"/>
+                                <field name="state" string="Status" invisible="0"/>
+                                <field name="property_type_id" options="{'no_create': true, 'no_create_edit': true, 'no_open': true}" widget="selection"/>
                                 <field name="postcode"/>
                                 <field name="date_availability"/>
                             </group>
@@ -63,14 +71,14 @@
                                     <field name="facades"/>
                                     <field name="garage"/>
                                     <field name="garden"/>
-                                    <field name="garden_area"/>
-                                    <field name="garden_orientation"/>
+                                    <field name="garden_area" invisible="not garden"/>
+                                    <field name="garden_orientation" invisible="not garden"/>
                                     <field name="total_area" string="Total Area (smq)"/>
                                 </group>
                             </page>
                             <page string="Offers">
                                 <group>
-                                    <field name="offer_ids" string=""/>
+                                    <field name="offer_ids" string="" readonly="state in ['offer_accepted', 'sold', 'canceled']" editable="1"/>
                                 </group>
                             </page>
                             <page string="Other info">
@@ -89,7 +97,9 @@
             <field name="name">estate.property Tree</field>
             <field name="model">estate.property</field>
             <field name="arch" type="xml">
-                <tree string="Estate Properties">
+                <tree string="Estate Properties"
+                decoration-success="state in ['offer_received', 'offer_accepted']"
+                decoration-bf="state in ['offer_accepted']" decoration-muted="state in ['sold']">
                     <field name="name"/>
                     <field name="state" optional="True"/>
                     <field name="expected_price"/>
@@ -100,6 +110,7 @@
                     <field name="garden"/>
                     <field name="garden_area"/>
                     <field name="garden_orientation"/>
+                    <field name="date_availability" optional="True"/>
                     <field name="active" optional="True"/>
                 </tree>
             </field>
@@ -109,6 +120,8 @@
             <field name="name">Properties</field>
             <field name="res_model">estate.property</field>
             <field name="view_mode">tree,form</field>
+            <!-- Activar el filtro por defecto -->
+            <field name="context">{'search_default_filter_available': 1}</field>
         </record>
     </data>
 </odoo>
