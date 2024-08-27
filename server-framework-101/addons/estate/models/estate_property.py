@@ -104,6 +104,13 @@ class EstateProperty(models.Model):
         )
     ]
 
+    def unlink(self):
+        for record in self:
+            if record.state not in ['new', 'canceled']:
+                raise UserError("You cannot delete a property"
+                                " unless its state is 'New' or 'Canceled'.")
+        return super(EstateProperty, self).unlink()
+
     @api.constrains('selling_price', 'expected_price')
     def _check_selling_price(self):
         for property_record in self:

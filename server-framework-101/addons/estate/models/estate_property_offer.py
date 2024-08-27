@@ -92,3 +92,21 @@ class EstatePropertyOffer(models.Model):
     def action_refused_offer(self):
         for record in self:
             record.status = 'refused'
+
+    @api.model
+    def create(self, vals):
+        if 'property_id' in vals:
+            property_id = vals['property_id']
+            property_obj = self.env['estate.property'].browse(property_id)
+            if 'price' in vals:
+                new_offer_price = vals['price']
+                existing_offers = property_obj.offer_ids.filtered(
+                    lambda offer: offer.price > new_offer_price
+                )
+                if existing_offers:
+                    raise UserError(
+                        "You cannot create an offer "
+                        "with a lower amount than an existing offer."
+                    )
+            property_obj.write({'state': 'offer_received'})
+        return super(EstatePropertyOffer, self).create(vals)
