@@ -18,21 +18,27 @@
             </field>
         </record>
 
-
         <record id="estate_property_offer_tree" model="ir.ui.view">
             <field name="name">estate.property.offer Tree</field>
             <field name="model">estate.property.offer</field>
             <field name="arch" type="xml">
-                <tree string="Offers">
+                <tree string="Offers" editable="bottom" decoration-danger="status in ['refused']" decoration-success="status in ['accepted']">
                     <field name="price"/>
-                    <field name="partner_id" string="Partner"/>
+                    <field name="partner_id" string="Partner" options="{'no_create': true, 'no_create_edit': true, 'no_open': true}" widget="selection"/>
                     <field name="validity"/>
                     <field name="date_deadline"/>
-                    <button name="action_confirm_offer" string="" type="object" icon="fa-check" class="text-success"/>
-                    <button name="action_refused_offer" type="object" icon="fa-times" class="text-danger"/>
-                    <field name="status"/>
+                    <button name="action_confirm_offer" string="" type="object" icon="fa-check" class="text-success" invisible="status"/>
+                    <button name="action_refused_offer" type="object" icon="fa-times" class="text-danger" invisible="status"/>
+                    <field name="status" optional="1"/>
                 </tree>
             </field>
+        </record>
+
+        <record id="estate_property_offer_action" model="ir.actions.act_window">
+            <field name="name">Offers</field>
+            <field name="res_model">estate.property.offer</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('property_type_id', '=', active_id)]</field>
         </record>
 
     </data>
