@@ -7,6 +7,8 @@
             <div class="m-2 p-2 border d-inline-block">
                 <Counter />
                 <Counter />
+                <Card title="'Card1'" content="'card1 team'"/>
+                <Card title="'Card2'" content="'card2 team'"/>
             </div>
         </div>
     </t>
