@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="awesome_owl_controller" model="ir.actions.act_url">
+        <field name="name">Awesome owl</field>
+        <field name="url">/awesome_owl</field>
+        <field name="target">self</field> <!-- 'self' abre la página en la misma ventana, 'new' abriría una nueva pestaña -->
+    </record>
+
+    <menuitem
+        id="awesome_owl_route"
+        name="Awesome owl"
+        action="awesome_owl_controller"
+        parent="estate.tutorial_menu_root"
+    />
+
+</odoo>
