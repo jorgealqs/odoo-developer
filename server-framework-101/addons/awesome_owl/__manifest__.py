@@ -10,6 +10,7 @@
     "application": True,
     'data': [
         'views/templates.xml',
+        'views/act_url/owl_playground.xml',
     ],
     'assets': {
         'awesome_owl.assets_playground': [
